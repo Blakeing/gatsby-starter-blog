@@ -1,3 +1,8 @@
+const resolveConfig = require("tailwindcss/resolveConfig")
+const tailwindConfig = require("./tailwind.config.js")
+
+const fullConfig = resolveConfig(tailwindConfig)
+
 module.exports = {
   siteMetadata: {
     title: `Gatsby Starter Blog`,
@@ -17,6 +22,18 @@ module.exports = {
       options: {
         path: `${__dirname}/content/blog`,
         name: `blog`,
+      },
+    },
+    {
+      resolve: `gatsby-plugin-postcss`,
+      options: {
+        postCssPlugins: [
+          require(`tailwindcss`)(tailwindConfig),
+          require(`autoprefixer`),
+          ...(process.env.NODE_ENV === `production`
+            ? [require(`cssnano`)]
+            : []),
+        ],
       },
     },
     {
@@ -70,12 +87,7 @@ module.exports = {
       },
     },
     `gatsby-plugin-react-helmet`,
-    {
-      resolve: `gatsby-plugin-typography`,
-      options: {
-        pathToConfigModule: `src/utils/typography`,
-      },
-    },
+
     // this (optional) plugin enables Progressive Web App + Offline functionality
     // To learn more, visit: https://gatsby.dev/offline
     // `gatsby-plugin-offline`,
